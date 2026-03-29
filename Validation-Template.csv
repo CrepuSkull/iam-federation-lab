@@ -1,0 +1,2 @@
+ID,UPN,DisplayName,Department,RiskLevel,ActionType,ActionDetail,CurrentMFAMethods,CurrentMFAStrength,ExcludedFromPolicy,LastSignIn,DaysSinceSignIn,RegulatoryReference,Valider,Commentaire
+001,[UPN],[Nom Prénom],[Département],CRITIQUE,ForceEnrollmentMFA,[Description de l'action],[Méthodes actuelles],[Force MFA],True/False,[Date],[Nombre de jours],[FINMA §42 · CSSF Ctrl 7 · DORA Art.9],,
