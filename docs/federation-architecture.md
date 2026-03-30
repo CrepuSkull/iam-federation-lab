@@ -32,7 +32,7 @@ INFRASTRUCTURE ON-PREMISE                    CLOUD MICROSOFT
              │ Kerberos (interne)           └───────────┬───────────────┘
              │                                          │
   ┌──────────▼──────────────┐               ┌───────────▼───────────────┐
-  │   Ressources internes   │               │  Applications cloud        │
+  │   Ressources internes   │               │  Applications cloud       │
   │   Serveurs · Partages   │               │  Microsoft 365 · Teams    │
   │   Applications legacy   │               │  SharePoint · Exchange    │
   │   VPN · RDP             │               │  Applications SaaS SAML   │
@@ -56,14 +56,14 @@ INFRASTRUCTURE ON-PREMISE                    CLOUD MICROSOFT
 
 ```
 Utilisateur           Poste Windows         AD DC              Ressource
-    │                     │                   │                    │
-    │──Login (pwd)────────►│                   │                    │
-    │                     │──AS-REQ (TGT)─────►│                    │
-    │                     │◄──AS-REP (TGT)─────│                    │
+    │                     │                     │                    │
+    │──Login (pwd)───────►│                     │                    │
+    │                     │──AS-REQ (TGT)──────►│                    │
+    │                     │◄──AS-REP (TGT)──────│                    │
     │                     │──TGS-REQ───────────►│                    │
     │                     │◄──TGS-REP (ticket)──│                    │
-    │                     │──────ticket──────────────────────────────►│
-    │◄──Accès accordé──────────────────────────────────────────────────│
+    │                     │──────ticket─────────────────────────────►│
+    │◄──Accès accordé────────────────────────────────────────────────│
 ```
 
 **Risques associés :** Pass-the-Hash sur NTLM, Overpass-the-Hash, Silver Ticket (ticket de service forgé), Golden Ticket (TGT forgé si KRBTGT compromis).
@@ -75,21 +75,21 @@ Utilisateur           Poste Windows         AD DC              Ressource
 ### Flux 2 — Authentification Entra ID moderne (OAuth 2.0 + OIDC)
 
 ```
-Utilisateur         Navigateur          Entra ID          Application
-    │                   │                   │                  │
-    │──Accès app─────────►│                   │                  │
-    │                   │──Auth redirect─────►│                  │
-    │◄──Login page───────│                   │                  │
-    │──Credentials───────►│                   │                  │
-    │                   │──POST credentials──►│                  │
-    │                   │   [Évaluation CA]  │                  │
-    │                   │   ↓ MFA requis     │                  │
-    │◄──MFA challenge────│                   │                  │
-    │──MFA response──────►│                   │                  │
-    │                   │◄──Authorization code│                  │
-    │                   │──code exchange──────────────────────────►│
-    │                   │◄──Access token + Refresh token───────────│
-    │◄──Contenu app──────│                   │                  │
+Utilisateur          Navigateur             Entra ID          Application
+    │                     │                     │                  │
+    │──Accès app─────────►│                     │                  │
+    │                     │──Auth redirect─────►│                  │
+    │◄──Login page────────│                     │                  │
+    │──Credentials───────►│                     │                  │
+    │                     │──POST credentials──►│                  │
+    │                     │   [Évaluation CA]   │                  │
+    │                     │   ↓ MFA requis      │                  │
+    │◄──MFA challenge─────│                     │                  │
+    │──MFA response──────►│                     │                  │
+    │                     │◄──Authorization code│                  │
+    │                     │──code exchange────────────────────────►│
+    │                     │◄──Access token + Refresh token─────────│
+    │◄──Contenu app───────│                     │                  │
 ```
 
 **Contrôles IAM-Lab :**
@@ -102,18 +102,18 @@ Utilisateur         Navigateur          Entra ID          Application
 ### Flux 3 — Authentification legacy contournant le MFA (SMTP AUTH)
 
 ```
-Application legacy      Exchange Online        Entra ID
-      │                      │                    │
-      │──SMTP AUTH────────────►│                   │
-      │  (user:password        │                   │
-      │   en clair / base64)   │                   │
-      │                       │──Validation────────►│
-      │                       │  Basic Auth        │  ← MFA NON vérifié
-      │                       │◄──OK───────────────│
-      │◄──250 Auth success─────│                   │
-      │                       │                    │
-      │  [La politique CA      │                    │
-      │   n'est PAS évaluée]   │                    │
+Application legacy      Exchange Online           Entra ID
+      │                        │                     │
+      │──SMTP AUTH────────────►│                     │
+      │  (user:password        │                     │
+      │   en clair / base64)   │                     │
+      │                        │──Validation────────►│
+      │                        │  Basic Auth         │  ← MFA NON vérifié
+      │                        │◄──OK────────────────│
+      │◄──250 Auth success─────│                     │
+      │                        │                     │
+      │  [La politique CA      │                     │
+      │   n'est PAS évaluée]   │                     │
 ```
 
 **Pourquoi c'est critique :** SMTP AUTH, IMAP, POP3 et NTLM ne passent pas par le flux OAuth/OIDC d'Entra ID. La politique d'accès conditionnel — y compris l'obligation de MFA — n'est jamais évaluée. Un attaquant avec un mot de passe valide peut s'authentifier même si l'utilisateur a le MFA activé.
@@ -125,15 +125,15 @@ Application legacy      Exchange Online        Entra ID
 ### Flux 4 — Seamless SSO Kerberos (hybride)
 
 ```
-Utilisateur      Navigateur        AD DC         Entra ID        Application
-    │                │               │               │                │
-    │──Accès app──────►│               │               │                │
-    │                │──Kerberos req──►│               │                │
-    │                │◄──Ticket KRB───│               │                │
-    │                │──Ticket KRB────────────────────►│                │
-    │                │   (AZUREADSSOACC$ token)        │                │
-    │                │◄──Access token──────────────────│                │
-    │◄──Contenu app───│               │               │                │
+Utilisateur        Navigateur          AD DC         Entra ID        Application
+    │                  │                 │               │                │
+    │──Accès app──────►│                 │               │                │
+    │                  │──Kerberos req──►│               │                │
+    │                  │◄──Ticket KRB────│               │                │
+    │                  │──Ticket KRB────────────────────►│                │
+    │                  │   (AZUREADSSOACC$ token)        │                │
+    │                  │◄──Access token──────────────────│                │
+    │◄──Contenu app────│                 │               │                │
 ```
 
 **Condition :** L'utilisateur est sur un réseau de confiance (interne) avec un poste joint au domaine.
@@ -148,16 +148,16 @@ Utilisateur      Navigateur        AD DC         Entra ID        Application
 
 ```
 Utilisateur externe    IdP externe (ADFS/Okta)    Entra ID         Application
-       │                        │                     │                 │
+       │                        │                     │                   │
        │──Accès app──────────────────────────────────────────────────────►│
-       │                        │                     │◄──SAML req──────│
-       │◄──Redirect vers IdP────────────────────────────                 │
-       │──Login──────────────────►│                    │                 │
-       │◄──SAML Assertion──────────│                    │                 │
-       │──SAML Assertion────────────────────────────────►│                │
-       │                        │                     │ [Valide le cert] │
+       │                        │                     │◄──SAML req───  ───│
+       │◄──Redirect vers IdP────────────────────────────                  │
+       │──Login────────────────►│                     │                   │
+       │◄──SAML Assertion───────│                     │                   │
+       │──SAML Assertion─────────────────────────────►│                   │
+       │                        │                     │ [Valide le cert]  │
        │                        │                     │──Access token────►│
-       │◄──Contenu app──────────────────────────────────────────────────────│
+       │◄──Contenu app────────────────────────────────────────────────────│
 ```
 
 **Risque :** Si le certificat SAML de l'IdP externe expire, TOUS les utilisateurs de ce domaine sont bloqués instantanément. Si la configuration du domaine fédéré pointe vers un IdP non maîtrisé, c'est une porte d'entrée externe dans le tenant.
@@ -170,18 +170,18 @@ Utilisateur externe    IdP externe (ADFS/Okta)    Entra ID         Application
 
 ```
 Utilisateur        Application tierce      Entra ID          Microsoft Graph
-    │                     │                   │                    │
-    │──Utilise l'app────────►│                   │                    │
-    │                     │──Auth request──────►│                    │
+    │                       │                   │                    │
+    │──Utilise l'app───────►│                   │                    │
+    │                       │──Auth request────►│                    │
     │◄──Login + Consent page│                   │                    │
     │  [Écran : cette app   │                   │                    │
     │   veut accéder à      │                   │                    │
     │   vos mails et        │                   │                    │
     │   fichiers]           │                   │                    │
-    │──Consent OUI──────────────────────────────►│                    │
-    │                     │◄──Access token──────│                    │
-    │                     │──GET /me/messages──────────────────────►│
-    │                     │◄──Mails utilisateur────────────────────│
+    │──Consent OUI─────────────────────────────►│                    │
+    │                       │◄──Access token────│                    │
+    │                       │──GET /me/messages─────────────────────►│
+    │                       │◄──Mails utilisateur────────────────────│
 ```
 
 **Risque OAuth Consent Phishing :** Un attaquant crée une application tierce légitime en apparence et envoie un lien d'invitation. L'utilisateur clique, consent, et l'application a maintenant accès à ses mails ou fichiers sans que IT le sache — et sans MFA, car l'authentification s'est faite normalement.
@@ -195,7 +195,7 @@ Utilisateur        Application tierce      Entra ID          Microsoft Graph
 ```
 COUCHE             RISQUE PRINCIPAL              DOMAINE D'AUDIT    PRIORITÉ
 ─────────────────────────────────────────────────────────────────────────────
-Authentification   Absence de MFA                D1                 🔴 Critique
+Authentification   Absence de MFA                 D1                 🔴 Critique
                    Protocoles legacy actifs       D2                 🔴 Critique
 
 Contrôle d'accès   Politiques CA lacunaires       D3                 🔴 Haute
