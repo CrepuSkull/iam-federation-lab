@@ -181,3 +181,13 @@
 C'est la pièce centrale de la couche remédiation. Son format est commun à tous les domaines.
 
 **Flux complet :**
+```
+Script Audit      →  Rapport CSV brut (lecture seule, scellé)
+        ↓
+Script Remediate  →  Proposals CSV (DryRun automatique)
+        ↓
+Consultant/RSSI   →  Remplit colonne Valider (OUI/NON) + Commentaire
+        ↓
+Script Remediate  →  Lit CSV validé, exécute OUI uniquement
+        ↓
+                     Executed CSV + Log + Rapport scellé
