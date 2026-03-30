@@ -1,7 +1,7 @@
 # iam-federation-lab
 
 > **Audit de fédération et d'authentification — Environnement hybride AD + Entra ID**  
-> *Détection des vecteurs d'attaque · Remédiation contrôlée · Conformité FINMA · CSSF · DORA*
+> *6 domaines · 12 scripts PowerShell · Lecture seule + Remédiation contrôlée CSV · Conformité FINMA · CSSF · DORA*
 
 ---
 
