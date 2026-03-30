@@ -1,25 +1,3 @@
-{
-  "Domain": "MFA Coverage",
-  "Client": "[CLIENT]",
-  "Date": "2026-03-29",
-  "Score": 62,
-  "ScoreLabel": "INSUFFISANT",
-  "TotalEntities": 245,
-  "Compliant": 152,
-  "NonCompliant": 93,
-  "Critical": 12,
-  "RegulatoryMapping": {
-    "FINMA_42": "PARTIAL",
-    "CSSF_Ctrl7": "FAIL",
-    "DORA_Art9": "PARTIAL"
-  },
-  "TopFindings": [
-    "12 comptes sans aucune méthode MFA — dont 3 comptes admin",
-    "34 comptes avec SMS uniquement — méthode faible",
-    "Département Finance : taux MFA 41% (sous seuil critique)"
-  ]
-}
-```
 
 
 **Échelle de score :**
