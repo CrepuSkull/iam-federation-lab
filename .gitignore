@@ -1,0 +1,62 @@
+# ─────────────────────────────────────────────
+# RAPPORTS D'AUDIT — données clients potentiellement sensibles
+# ─────────────────────────────────────────────
+Reports/
+*.csv
+!templates/Validation-Template.csv
+
+# ─────────────────────────────────────────────
+# LOGS D'EXÉCUTION
+# ─────────────────────────────────────────────
+*.log
+Remediate-*.log
+Audit-*.log
+
+# ─────────────────────────────────────────────
+# FICHIERS DE SCELLAGE (liés à des données réelles)
+# ─────────────────────────────────────────────
+*.sha256
+*.tsr
+*.tsq
+
+# ─────────────────────────────────────────────
+# CREDENTIALS ET TOKENS — NE JAMAIS COMMITTER
+# ─────────────────────────────────────────────
+*.pfx
+*.p12
+*.key
+*.pem
+*.cer
+*token*.json
+*secret*.json
+*credentials*.json
+keycloak-token.txt
+
+# ─────────────────────────────────────────────
+# FICHIERS DE CONFIGURATION LOCAUX
+# ─────────────────────────────────────────────
+config.local.ps1
+config.local.json
+.env
+
+# ─────────────────────────────────────────────
+# FICHIERS TEMPORAIRES POWERSHELL
+# ─────────────────────────────────────────────
+*.ps1xml
+*.tmp
+*.bak
+
+# ─────────────────────────────────────────────
+# SYSTÈME
+# ─────────────────────────────────────────────
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+
+# ─────────────────────────────────────────────
+# IDE / ÉDITEURS
+# ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.code-workspace
